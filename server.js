@@ -7,8 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔥 CONEXIÓN MONGODB
-mongoose.connect('mongodb://127.0.0.1:27017/smr')
+// 🔥 CONEXIÓN MONGODB (ATLAS)
+mongoose.connect('mongodb+srv://edgarinp4:Alexinm33.@cluster0.klnwc5r.mongodb.net/smr?retryWrites=true&w=majority')
 .then(() => console.log("MongoDB conectado"))
 .catch(err => console.log(err));
 
@@ -30,8 +30,6 @@ app.post('/contacto', async (req, res) => {
         const nuevo = new Mensaje(req.body);
         await nuevo.save();
 
-        console.log("Mensaje guardado en BD");
-
         res.json({ ok: true });
     } catch (error) {
         console.log(error);
@@ -45,6 +43,7 @@ app.get('/contacto', async (req, res) => {
         const data = await Mensaje.find().sort({ fecha: -1 });
         res.json(data);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: "Error al obtener" });
     }
 });
@@ -59,7 +58,9 @@ app.delete('/contacto/:id', async (req, res) => {
     }
 });
 
-// 🔥 SERVER
-app.listen(3000, () => {
-    console.log('Servidor corriendo en http://localhost:3000');
+// 🔥 PUERTO PARA RENDER
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log('Servidor corriendo en puerto ' + PORT);
 });
